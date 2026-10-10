@@ -5,7 +5,7 @@ const b = await chromium.launch();
 const p = await b.newPage({ viewport: { width: 1366, height: 768 } });
 const errs = [];
 p.on('pageerror', (e) => errs.splice(errs.length, 0, String(e)));
-await p.goto(BASE); await p.waitForTimeout(5000);
+await p.goto(BASE); await p.waitForFunction(() => window.__netto && window.__netto.state().p === 1);
 await p.keyboard.press('ArrowRight'); await p.waitForTimeout(3000);
 await p.screenshot({ path: 'shots/apps-mid.png' });
 await p.keyboard.press('ArrowRight'); await p.waitForTimeout(900);
