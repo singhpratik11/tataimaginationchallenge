@@ -1,6 +1,6 @@
-# Netto — scroll story
+# Netto — story deck
 
-A scroll-driven keynote for **Netto** (Tata Imagination Challenge 2026, Pratik Singh).
+A keynote-style story deck for **Netto** (Tata Imagination Challenge 2026, Pratik Singh).
 Vite + vanilla JS, GSAP for the transitions and builds. The pitch video is deliberately not on the site. Poppins is self-hosted, so it runs offline.
 
 ## Run
