@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Netto · Know what you kept</title>
+  <meta name="description" content="Netto: a weekly WhatsApp card that shows India's gig workers what they actually kept. Pratik Singh · Tata Imagination Challenge 2026." />
+  <meta name="theme-color" content="#22355C" />
+  <link rel="icon" type="image/png" href="./favicon.png" />
+</head>
+<body>
+  <a class="skip" href="#netto">Skip to the idea</a>
+
+  <!-- chrome: progress, dots, counter, controls -->
+  <div class="progress" aria-hidden="true"><span></span></div>
+  <nav class="dots" aria-label="Slides"></nav>
+  <div class="counter" aria-live="polite"></div>
+  <div class="toolbar" role="toolbar" aria-label="Presentation controls">
+    <button type="button" data-act="present" aria-pressed="false" title="Presenter mode (P)">P</button>
+    <button type="button" data-act="click" aria-pressed="true" title="Click to advance (C)">C</button>
+    <button type="button" data-act="full" title="Fullscreen (F)">F</button>
+  </div>
+  <div class="grain" aria-hidden="true"></div>
+
+  <main id="deck">
+
+    <!-- S0 · TITLE -->
+    <section class="slide bg-navy" id="title" data-label="Title">
+      <div class="inner center">
+        <h1 class="title-logo"><span class="logo" data-logo="white" role="img" aria-label="Netto"></span></h1>
+        <p class="tagline split-words">Know what you kept.</p>
+        <p class="byline">Pratik Singh · Tata Imagination Challenge 2026</p>
+        <div class="hint" aria-hidden="true">
+          <span>Scroll or press →</span>
+          <svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 4v15m0 0-6-6m6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- S1 · JUGGLING APPS -->
+    <section class="slide bg-ink" id="apps" data-label="Three apps" data-len="2.6">
+      <p class="composite">Ravi is a composite of riders' stories.</p>
+      <div class="inner split">
+        <div class="copy lines">
+          <p class="line lg">This is Ravi. Three apps open, all day.</p>
+          <p class="line">He knows which one pays ₹20 more, which has a bonus tonight, which hour has surge.</p>
+          <p class="line strong">He chases every extra rupee.</p>
+        </div>
+        <div class="stage">
+          <div class="phone tilt">
+            <div class="screen screen-dark">
+              <div class="sb" data-time="6:48"></div>
+              <p class="os-label">Open apps</p>
+              <div class="tiles">
+                <div class="tile" data-tile="0">
+                  <span class="app-ic ic-a">D1</span>
+                  <div><p class="tile-app">Delivery app 1</p><p class="tile-main">₹62 for this trip</p><p class="tile-sub">2.4 km · accept in 12s</p></div>
+                  <span class="ring"></span>
+                </div>
+                <div class="tile" data-tile="1">
+                  <span class="app-ic ic-b">D2</span>
+                  <div><p class="tile-app">Delivery app 2</p><p class="tile-main">Bonus: 4 more orders → ₹150</p><p class="tile-sub">ends 11 PM</p></div>
+                  <span class="ring"></span>
+                </div>
+                <div class="tile" data-tile="2">
+                  <span class="app-ic ic-c">R</span>
+                  <div><p class="tile-app">Ride app</p><p class="tile-main">Surge 1.4×</p><p class="tile-sub">next 40 min · near station</p></div>
+                  <span class="ring"></span>
+                </div>
+              </div>
+              <span class="thumb" aria-hidden="true"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- S2 · THE QUESTION -->
+    <section class="slide bg-ink" id="question" data-label="The question" data-len="1.6">
+      <div class="drift" aria-hidden="true">
+        <span class="chip in">Delivery app 1 · + ₹640</span>
+        <span class="chip out">Petrol pump · − ₹250</span>
+        <span class="chip in">Delivery app 2 · + ₹1,120</span>
+        <span class="chip out">Bike repair · − ₹800</span>
+        <span class="chip in">Ride app · + ₹410</span>
+        <span class="chip out">Phone recharge · − ₹299</span>
+        <span class="chip in">Delivery app 1 · + ₹380</span>
+        <span class="chip out">Petrol pump · − ₹300</span>
+      </div>
+      <div class="inner center narrow">
+        <h2 class="huge split-words">But how much did he actually keep this week?</h2>
+        <p class="sub fade">After petrol and repairs, he doesn't know.</p>
+      </div>
+    </section>
+
+    <!-- S3 · THE GAP -->
+    <section class="slide bg-light" id="gap" data-label="The gap" data-len="2.2">
+      <div class="inner gap-wrap">
+        <p class="eyebrow">One rider's month</p>
+        <div class="gap">
+          <div class="gap-labels">
+            <div class="gl earned"><span class="k">Earned</span><span class="v">₹<b class="count" data-to="35000">35,000</b> <small>a month</small></span></div>
+          </div>
+          <div class="bar" role="img" aria-label="Bar: earned ₹35,000 a month; work costs eat it down to under ₹17,000 kept.">
+            <span class="bar-fill"></span>
+            <span class="bar-cost"><em>Work costs · petrol, repairs, phone</em></span>
+          </div>
+          <div class="gap-labels below">
+            <div class="gl kept"><span class="k">Kept</span><span class="v">under ₹<b class="count" data-to="17000">17,000</b></span></div>
+          </div>
+        </div>
+        <h2 class="big split-words">Earning the most isn't keeping the most.</h2>
+        <p class="foot">One small diary study of platform workers in Bengaluru (Dvara Research, 22 workers).</p>
+      </div>
+    </section>
+
+    <!-- S4 · THE LOAN -->
+    <section class="slide bg-ink" id="loan" data-label="The loan" data-len="2.8">
+      <div class="inner split">
+        <div class="copy lines">
+          <p class="line lg">Three months ago, his bike broke down. A loan app gave him ₹10,000 in two minutes.</p>
+          <p class="line strong">Now the recovery calls start at eight every morning.</p>
+          <p class="stat fade">An RBI working group found 600 of 1,100 lending apps on app stores were operating illegally (2021).</p>
+        </div>
+        <div class="stage">
+          <div class="phone tilt">
+            <div class="screen screen-dark">
+              <div class="sb" data-time="8:02"></div>
+              <div class="call">
+                <div class="call-av"><span class="pulse"></span><span class="pulse p2"></span><span class="q">?</span></div>
+                <p class="call-name">Unknown number</p>
+                <p class="call-state">calling… 8:02 AM</p>
+                <div class="call-btns"><span class="cb no" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 14c4.5-4 11.5-4 16 0l-2 2.5-3-1.5v-2.2a10 10 0 0 0-6 0V15l-3 1.5z" fill="#fff"/></svg></span><span class="cb yes" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6.5 3.5 9 7l-1.5 2a11 11 0 0 0 7.5 7.5l2-1.5 3.5 2.5-1.5 3C11 20 4 13 3.5 5z" fill="#fff"/></svg></span></div>
+              </div>
+              <div class="lock">
+                <p class="lock-day">Monday, 13 October</p>
+                <p class="lock-time">8:02</p>
+                <div class="notifs">
+                  <div class="notif warn"><span class="n-ic loan">₹</span><div><p class="n-h"><b>Loan app</b><span>now</span></p><p class="n-b">Your EMI is 14 days overdue. Pay now to avoid action.</p></div></div>
+                  <div class="notif"><span class="n-ic missed"><svg viewBox="0 0 24 24"><path d="M6.5 3.5 9 7l-1.5 2a11 11 0 0 0 7.5 7.5l2-1.5 3.5 2.5-1.5 3C11 20 4 13 3.5 5z" fill="currentColor"/></svg></span><div><p class="n-h"><b>7 missed calls</b><span>8:01</span></p><p class="n-b">Unknown number</p></div></div>
+                  <div class="notif old"><span class="n-ic loan">₹</span><div><p class="n-h"><b>Loan app</b><span>3 months ago</span></p><p class="n-b">₹10,000 approved in 2 minutes!</p></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- S5 · THE DAUGHTER -->
+    <section class="slide bg-ink" id="beti" data-label="His daughter" data-len="3.8" data-slow>
+      <div class="inner split">
+        <div class="copy lines">
+          <p class="line xl">He says yes.<br /><span class="soft">And hopes he's right.</span></p>
+        </div>
+        <div class="stage">
+          <div class="phone tilt">
+            <div class="screen screen-chat">
+              <div class="sb dark" data-time="9:14"></div>
+              <div class="chat-head"><span class="av av-b">B</span><div><p class="ch-name">Beti</p><p class="ch-status"><span class="st-on">online</span><span class="st-typing">typing…</span></p></div></div>
+              <div class="chat-body">
+                <p class="day-chip">Today</p>
+                <div class="msg in"><p>Papa, the school fees are due on Friday.</p><span class="meta">9:14 PM</span></div>
+                <div class="slot"><div class="typing msg out" aria-hidden="true"><i></i><i></i><i></i></div>
+                <div class="msg out reply"><p>Haan beta, ho jayega.</p><p class="tr">Yes, it'll be done.</p><span class="meta">9:16 PM <span class="ticks">✓✓</span></span></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- S6 · THE UNNOTICED PROBLEM -->
+    <section class="slide bg-navy" id="unnoticed" data-label="Unnoticed" data-len="2.4">
+      <div class="inner center narrow">
+        <h2 class="big talk split-words">We talk about gig workers' pay, safety and insurance.</h2>
+        <p class="big under split-words">But underneath sits something nobody notices: <span class="hl">no one ever shows them what they kept.</span></p>
+        <div class="scale fade">
+          <p class="scale-n"><b class="count" data-to="23500000">2,35,00,000</b></p>
+          <p class="scale-t">2.35 crore Indians are expected to do gig work by 2029–30 (NITI Aayog).</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- S7 · MEET NETTO -->
+    <section class="slide bg-navy" id="netto" data-label="Meet Netto" data-len="2.2">
+      <div class="inner center">
+        <h2 class="meet-logo"><span class="logo" data-logo="white" role="img" aria-label="Netto"></span></h2>
+        <ol class="steps">
+          <li class="step"><span class="step-ic"><svg viewBox="0 0 32 32"><path d="M16 4a12 12 0 0 0-10.4 18L4 28l6.2-1.6A12 12 0 1 0 16 4Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M11 14h10M11 18h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><span class="step-n">1</span><p><b>Sign up once</b> — 5 minutes, on WhatsApp. No new app.</p></li>
+          <li class="step"><span class="step-ic"><svg viewBox="0 0 32 32"><path d="M4 12 16 5l12 7M6 12v12m6.7-12v12m6.6-12v12M26 12v12M4 27h24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="16" cy="17.5" r="2.4" fill="currentColor"/></svg></span><span class="step-n">2</span><p><b>One read-only bank permission</b> — every app pays into the bank, so it sees them all.</p></li>
+          <li class="step"><span class="step-ic"><svg viewBox="0 0 32 32"><rect x="6" y="4" width="20" height="24" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M11 21v-3m5 3v-7m5 7v-5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><path d="M11 10h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><span class="step-n">3</span><p><b>One card every Sunday</b> — in the rider's own language.</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- S8 · THE WEEKLY MESSAGE -->
+    <section class="slide bg-ink" id="message" data-label="Sunday message" data-len="2.6">
+      <div class="inner split">
+        <div class="copy lines">
+          <p class="eyebrow on-dark">Sunday, 8 AM</p>
+          <p class="line lg">One message. The whole week, in rupees he recognises.</p>
+          <p class="sample">Sample · example numbers</p>
+        </div>
+        <div class="stage">
+          <div class="phone tilt">
+            <div class="screen screen-chat">
+              <div class="sb dark" data-time="8:00"></div>
+              <div class="chat-head"><img class="av" src="./assets/brand/whatsapp-dp.svg" alt="" width="40" height="40" /><div><p class="ch-name">Netto</p><p class="ch-status"><span class="st-on">your weekly money helper</span></p></div></div>
+              <div class="chat-body">
+                <p class="day-chip">Sunday</p>
+                <div class="msg in m1"><p><b>This week (4–10 Oct)</b></p><p>Came in <b>₹<span class="count" data-to="7800">7,800</span></b></p><p>Costs <b class="c-cost">₹<span class="count" data-to="3700">3,700</span></b></p><p>Kept <b class="c-kept">₹<span class="count" data-to="4100">4,100</span></b></p><span class="meta">8:00 AM</span></div>
+                <div class="msg in m2"><p>Safe to spend: <b class="c-kept">₹<span class="count" data-to="2900">2,900</span></b></p><p class="dim">after rent, money home and your EMI</p><span class="meta">8:00 AM</span></div>
+                <div class="msg in m3"><p>Good week! Keep <b>₹<span class="count" data-to="300">300</span></b> aside for bike repairs?</p><span class="meta">8:00 AM</span>
+                  <div class="qr"><button type="button" class="qr-yes">Yes</button><button type="button">Not this week</button></div></div>
+                <div class="msg out m4"><p>Yes</p><span class="meta">8:03 AM <span class="ticks">✓✓</span></span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- S9 · THE CARD -->
+    <section class="slide bg-light" id="card" data-label="The card" data-len="3.4">
+      <div class="inner split card-split">
+        <div class="copy">
+          <p class="eyebrow">The Sunday card</p>
+          <ol class="callouts">
+            <li data-c="0" class="on"><span>a</span><p><b>Came in − costs = kept</b>The whole week in one line.</p></li>
+            <li data-c="1"><span>b</span><p><b>If work stops, your money lasts 9 days</b>A cushion he can see grow.</p></li>
+            <li data-c="2"><span>c</span><p><b>Busy weeks aren't always the best weeks</b>Eight weeks of kept vs costs.</p></li>
+            <li data-c="3"><span>d</span><p><b>The good-week nudge</b>Keep ₹300 aside for bike repairs?</p></li>
+          </ol>
+        </div>
+        <div class="stage">
+          <figure class="cardframe">
+            <div class="cardzoom"><div class="czi"><img src="./assets/cards/card-english.webp" alt="Netto weekly card, English. Came in ₹7,800 minus costs ₹3,700 equals kept ₹4,100. If work stops, your money lasts 9 days. Last 8 weeks bar chart of kept and costs. Average kept (4 weeks) ₹3,400. Good week! Keep ₹300 aside for bike repairs?" width="1080" height="1350" /><span class="spot" aria-hidden="true"></span></div>
+            </div>
+            <figcaption class="sample">Sample · example numbers</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- S9b · TRY A WEEK (interactive) -->
+    <section class="slide bg-ink" id="try" data-label="Try a week" data-len="0.6">
+      <div class="inner split try-split">
+        <div class="copy">
+          <p class="eyebrow on-dark">Try it</p>
+          <h2 class="mid">Play with a week.<br /><span class="soft">See what the rider would see.</span></h2>
+          <div class="presets" role="group" aria-label="Example weeks">
+            <button type="button" data-preset="good" class="on">Good week</button>
+            <button type="button" data-preset="slow">Slow week</button>
+            <button type="button" data-preset="break">Bike breaks down</button>
+          </div>
+          <label class="sl"><span>Came in this week <output data-o="in"></output></span><input type="range" min="2000" max="12000" step="100" value="7800" data-k="in" /></label>
+          <label class="sl"><span>Work costs <output data-o="cost"></output></span><input type="range" min="500" max="8000" step="100" value="3700" data-k="cost" class="r-cost" /></label>
+          <label class="sl"><span>Already set aside <output data-o="saved"></output></span><input type="range" min="0" max="15000" step="50" value="4050" data-k="saved" /></label>
+          <p class="assume">Assumes ₹1,200 a week for rent, money home and EMI, and ₹450 a day to live on.</p>
+        </div>
+        <div class="stage">
+          <div class="mini" aria-live="polite">
+            <div class="mini-top"><span class="logo sm" data-logo="color" role="img" aria-label="Netto"></span><span>Your week's money</span></div>
+            <div class="eq">
+              <div><span class="k">Came in</span><b data-v="in"></b></div><i>−</i>
+              <div><span class="k"><em class="sw cost"></em>Costs</span><b data-v="cost"></b></div><i>=</i>
+              <div class="keptbox"><span class="k"><em class="sw kept"></em>Kept</span><b data-v="kept"></b></div>
+            </div>
+            <div class="safe"><span>Safe to spend</span><b data-v="safe"></b></div>
+            <div class="days"><p><b data-v="days"></b> If work stops, your money lasts</p><div class="segs"></div><p class="ends"><span>0</span><span>30</span></p></div>
+            <p class="nudge" data-v="nudge"></p>
+            <p class="sample">Sample · example numbers</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- S10 · EVERY LANGUAGE -->
+    <section class="slide bg-light" id="languages" data-label="Every language" data-len="2.6">
+      <div class="inner lang-wrap">
+        <p class="big split-words lang-line">In the rider's own language.</p>
+        <p class="sub dark fade">Language-neutral name, so it belongs to everyone.</p>
+        <div class="fan">
+          <div class="track">
+            <button type="button" class="lc" data-full="./assets/cards/card-english.webp"><img src="./assets/cards/card-english-sm.webp" alt="Weekly card in English" width="560" height="700" loading="lazy" /><span>English</span></button>
+            <button type="button" class="lc" data-full="./assets/cards/card-hindi.webp"><img src="./assets/cards/card-hindi-sm.webp" alt="Weekly card in Hindi" width="560" height="700" loading="lazy" /><span>हिन्दी · Hindi</span></button>
+            <button type="button" class="lc" data-full="./assets/cards/card-marathi.webp"><img src="./assets/cards/card-marathi-sm.webp" alt="Weekly card in Marathi" width="560" height="700" loading="lazy" /><span>मराठी · Marathi</span></button>
+            <button type="button" class="lc" data-full="./assets/cards/card-tamil.webp"><img src="./assets/cards/card-tamil-sm.webp" alt="Weekly card in Tamil" width="560" height="700" loading="lazy" /><span>தமிழ் · Tamil</span></button>
+            <button type="button" class="lc" data-full="./assets/cards/card-telugu.webp"><img src="./assets/cards/card-telugu-sm.webp" alt="Weekly card in Telugu" width="560" height="700" loading="lazy" /><span>తెలుగు · Telugu</span></button>
+            <button type="button" class="lc" data-full="./assets/cards/card-kannada.webp"><img src="./assets/cards/card-kannada-sm.webp" alt="Weekly card in Kannada" width="560" height="700" loading="lazy" /><span>ಕನ್ನಡ · Kannada</span></button>
+            <button type="button" class="lc" data-full="./assets/cards/card-bengali.webp"><img src="./assets/cards/card-bengali-sm.webp" alt="Weekly card in Bengali" width="560" height="700" loading="lazy" /><span>বাংলা · Bengali</span></button>
+          </div>
+        </div>
+        <p class="sample">Sample · example numbers · tap a card to open it</p>
+      </div>
+    </section>
+
+    <!-- S11 · THE PAYOFF -->
+    <section class="slide bg-ink" id="payoff" data-label="The payoff" data-len="3.2" data-slow>
+      <div class="inner split">
+        <div class="copy lines">
+          <p class="line xl">Now when his daughter asks, Ravi doesn't hope.<br /><span class="hl-blue">He knows.</span></p>
+        </div>
+        <div class="stage">
+          <div class="phone tilt">
+            <div class="screen screen-chat">
+              <div class="sb dark" data-time="7:40"></div>
+              <div class="chat-head"><span class="av av-b">B</span><div><p class="ch-name">Beti</p><p class="ch-status"><span class="st-on">online</span><span class="st-typing">typing…</span></p></div></div>
+              <div class="chat-body">
+                <p class="day-chip">Today</p>
+                <div class="msg in"><p>Papa, the school fees are due on Friday.</p><span class="meta">7:38 PM</span></div>
+                <div class="slot"><div class="typing msg out" aria-hidden="true"><i></i><i></i><i></i></div>
+                <div class="msg out reply"><p>Paid today, beta.</p><span class="meta">7:39 PM <span class="ticks">✓✓</span></span></div></div>
+                <div class="msg in heart"><p>❤️</p></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- S12 · WHY IT WORKS -->
+    <section class="slide bg-light" id="why" data-label="Why it works" data-len="1.6">
+      <div class="inner">
+        <h2 class="big split-words">Why it works</h2>
+        <div class="cols">
+          <article class="col"><span class="col-ic"><svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="11" fill="none" stroke="currentColor" stroke-width="2"/><path d="M11 16.5l3.4 3.3L21.5 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h3>Zero effort</h3><p>After sign-up, the rider does nothing.</p></article>
+          <article class="col"><span class="col-ic"><svg viewBox="0 0 32 32"><path d="M16 4 6 8v7c0 6.5 4.3 11.2 10 13 5.7-1.8 10-6.5 10-13V8z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><rect x="12" y="14" width="8" height="6.5" rx="1.2" fill="currentColor"/><path d="M13.5 14v-1.5a2.5 2.5 0 0 1 5 0V14" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></span><h3>Trusted</h3><p>Never holds money, never pushes a loan, data never goes to delivery platforms.</p></article>
+          <article class="col"><span class="col-ic"><svg viewBox="0 0 32 32"><path d="M5 25h22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M8 25v-6m6 6V14m6 11v-8m6 8V8" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></span><h3>Proven nudge</h3><p class="col-big">~<b class="count" data-to="16">16</b>%</p><p>In bank trials, savings reminders that named a real goal raised savings by about 16% (Karlan et al.).</p></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- S13 · WHY TATA -->
+    <section class="slide bg-navy" id="tata" data-label="Why Tata" data-len="1.8">
+      <div class="inner">
+        <h2 class="eyebrow on-dark">Why Tata</h2>
+        <div class="rows">
+          <div class="row"><span class="row-k">Build</span><p class="row-v big-ish">TCS can build it.</p></div>
+          <div class="row"><span class="row-k">Trust</span><p class="row-v">Bank data goes only to an RBI-regulated partner like Tata Capital, read-only, under India's Account Aggregator system.</p></div>
+          <div class="row"><span class="row-k">Pilot</span><p class="row-v">Pilot: <b class="count" data-to="2000">2,000</b> riders in Mumbai, 6 months. We measure sign-up time, weekly opens, and whether riders' cushion grows.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- S14 · WATCH THE STORY -->
+    <section class="slide bg-ink" id="watch" data-label="Watch" data-len="0.4">
+      <div class="inner watch-wrap">
+        <div class="watch-head">
+          <h2 class="mid">Watch the story <span class="soft">· 2 min</span></h2>
+          <button type="button" class="ghost" data-act="transcript" aria-expanded="false" aria-controls="transcript">Transcript</button>
+        </div>
+        <div class="player">
+          <!-- To swap the film: replace public/assets/video/netto-pitch.mp4 (see README). -->
+          <video id="pitch" preload="none" playsinline muted loop poster="./assets/video/poster.webp" aria-label="Netto pitch video, 2 minutes. Captions are burned into the video; a transcript is available.">
+            <source data-src="./assets/video/netto-pitch.mp4" type="video/mp4" />
+          </video>
+          <button type="button" class="play" aria-label="Play the video with sound"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg><span>Play with sound</span></button>
+        </div>
+        <div class="transcript" id="transcript" hidden>
+          <p>This is Ravi. Three apps open, all day. He knows which one pays twenty rupees more, which has a bonus tonight, which hour has surge. He chases every extra rupee.</p>
+          <p>But how much did he actually keep this week, after petrol and repairs? He doesn't know.</p>
+          <p>Three months ago, his bike broke down. A loan app gave him ten thousand rupees in two minutes. Now the recovery calls start at eight every morning. He's already two weeks behind.</p>
+          <p>That night, his daughter calls. "Papa, the school fees are due on Friday." He says yes. And hopes he's right.</p>
+          <p>Hi, I'm Pratik Singh. Earning the most isn't keeping the most. And nobody shows riders what's left. So one bad week becomes a loan, and one loan becomes months of fear.</p>
+          <p>My idea is Netto. Ravi signs up once, on WhatsApp. No new app. With one read-only bank permission, every Sunday he gets one card in his own language: how much he got this week, how much he kept, and how much he can safely spend after rent, money home and his loan repayment. So he knows what he can pay, and what he can't.</p>
+          <p>In a good week, it asks: keep three hundred rupees aside for bike repairs? Slowly, a cushion grows, so the next breakdown doesn't need a loan app. Now when his daughter asks, Ravi doesn't hope. He knows.</p>
+          <p>TCS can build it, with bank data going only to an RBI-regulated partner like Tata Capital. Netto can't clear Ravi's loan. But it can help make sure it's his last.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- S15 · CLOSE -->
+    <section class="slide bg-navy" id="close" data-label="Close" data-len="2.2">
+      <div class="inner center narrow">
+        <p class="big c1 split-words">Netto can't raise a rider's pay.</p>
+        <p class="big c2 split-words">But it can show them what they kept — so one bad week stays just one bad week.</p>
+        <div class="close-sign">
+          <span class="logo" data-logo="white" role="img" aria-label="Netto"></span>
+          <p class="tagline">Know what you kept.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- S16 · SOURCES -->
+    <section class="slide bg-light sources" id="sources" data-label="Sources">
+      <div class="inner">
+        <h2 class="eyebrow">Sources</h2>
+        <ol class="src">
+          <li><a href="https://www.dvara.com/research/" target="_blank" rel="noopener">Dvara Research — diary study of platform workers in Bengaluru (22 workers)</a></li>
+          <li><a href="https://www.niti.gov.in/sites/default/files/2022-06/Policy_Brief_India%27s_Booming_Gig_and_Platform_Economy_27062022.pdf" target="_blank" rel="noopener">NITI Aayog — India's Booming Gig and Platform Economy (2022): 2.35 crore gig workers by 2029–30</a></li>
+          <li><a href="https://www.rbi.org.in/Scripts/PublicationReportDetails.aspx?UrlPage=&amp;ID=1189" target="_blank" rel="noopener">RBI — Report of the Working Group on Digital Lending (2021)</a></li>
+          <li><a href="https://www.nber.org/papers/w16205" target="_blank" rel="noopener">Karlan, McConnell, Mullainathan &amp; Zinman — "Getting to the Top of Mind: How Reminders Increase Saving" (NBER)</a></li>
+          <li><a href="https://sahamati.org.in/" target="_blank" rel="noopener">Sahamati — Account Aggregator framework</a></li>
+        </ol>
+        <p class="foot">All card and chat numbers are examples. Ravi is a composite of riders' stories. No delivery or ride platform is named or endorsed.</p>
+        <p class="foot">Pratik Singh · Tata Imagination Challenge 2026</p>
+      </div>
+    </section>
+  </main>
+
+  <div class="lightbox" hidden><button type="button" class="lb-close" aria-label="Close">×</button><img alt="" /></div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
