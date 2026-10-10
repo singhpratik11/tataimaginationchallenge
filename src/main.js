@@ -11,6 +11,8 @@ import './style.css';
 import { gsap } from 'gsap';
 import logoWhite from './brand/logo-white.svg?raw';
 import logoColor from './brand/logo.svg?raw';
+import markWhite from './brand/mark-white.svg?raw';
+import markColor from './brand/mark.svg?raw';
 
 
 const RM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -39,6 +41,10 @@ function mountLogos() {
 }
 
 const SB_ICONS = `<span class="ic"><svg viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg viewBox="0 0 16 12"><path d="M8 2.2c2.3 0 4.4.9 6 2.4l1.3-1.4A10.3 10.3 0 0 0 8 .3C5.2.3 2.6 1.4.7 3.2L2 4.6a8.4 8.4 0 0 1 6-2.4Zm0 3.8c1.3 0 2.5.5 3.4 1.3l1.3-1.4A6.7 6.7 0 0 0 8 4.1c-1.8 0-3.4.7-4.7 1.8l1.3 1.4C5.5 6.5 6.7 6 8 6Zm0 3.7L9.9 8a2.9 2.9 0 0 0-3.8 0L8 9.7Z"/></svg><svg viewBox="0 0 27 12"><rect x=".5" y=".5" width="22" height="11" rx="3" fill="none" stroke="currentColor" opacity=".5"/><rect x="2" y="2" width="15" height="8" rx="1.8"/><rect x="24" y="4" width="2" height="4" rx="1"/></svg></span>`;
+function mountMarks() {
+  $$('[data-mark]').forEach((el) => { el.innerHTML = el.dataset.mark === 'color' ? markColor : markWhite; });
+}
+
 function mountStatusBars() {
   $$('.sb').forEach((el) => { el.innerHTML = `<span>${el.dataset.time}</span>${SB_ICONS}`; });
 }
@@ -62,6 +68,7 @@ function splitWords(root) {
 }
 
 mountLogos();
+mountMarks();
 mountStatusBars();
 $$('.split-words').forEach(splitWords);
 $('.segs').innerHTML = '<i></i>'.repeat(30);
@@ -429,6 +436,7 @@ function updateChrome() {
   dotBtns.forEach((b, i) => { b.classList.toggle('on', i === cur); b.toggleAttribute('aria-current', i === cur); });
   $('.counter').textContent = `${cur + 1}/${N}`;
   document.body.dataset.tone = slides[cur].classList.contains('bg-light') ? 'light' : 'dark';
+  document.body.classList.toggle('full-logo', ['title', 'netto', 'close'].includes(slides[cur].id)); // these already show the big logo
   history.replaceState(null, '', '#' + slides[cur].id);
 }
 

@@ -70,6 +70,13 @@ body.presenter .dots, body.presenter .hint, body.presenter .toolbar { opacity: 0
 body.presenter .counter { opacity: .8; }
 
 
+/* Netto leaf mark, fixed top-right on every slide except the three that show the full logo */
+.corner-mark { position: fixed; top: clamp(14px, 2.6vh, 30px); right: clamp(16px, 2.2vw, 40px); width: clamp(28px, 2.4vw, 44px); aspect-ratio: 202 / 155; z-index: 40; pointer-events: none; transition: opacity .6s ease; }
+.corner-mark .cm { position: absolute; inset: 0; transition: opacity .6s ease; }
+.corner-mark svg { display: block; width: 100%; height: auto; }
+body[data-tone='light'] .cm-on-dark, body:not([data-tone='light']) .cm-on-light { opacity: 0; }
+body.full-logo .corner-mark { opacity: 0; }
+
 /* ---------- slides ---------- */
 .slide { position: absolute; inset: 0; overflow: hidden; visibility: hidden; }
 .slide.is-on { visibility: visible; }
@@ -114,10 +121,10 @@ html:not(.ready) .slide:first-child { visibility: visible; }
 .logo { display: inline-block; line-height: 0; }
 /* "A TATA PRODUCT": a small endorsement line under the logo (plain text, no Tata mark).
    --lw = that logo's width; logo height = width x 191/588 (its viewBox). */
-.tata-line { --lh: calc(var(--lw) * 191 / 588); font-weight: 600; letter-spacing: .22em; color: var(--muted-light); font-size: max(11px, calc(var(--lh) * 0.13)); line-height: 1.2; margin-top: calc(var(--lh) * 0.12); white-space: nowrap; }
+.tata-line { --lh: calc(var(--lw) * 191 / 588); font-weight: 600; letter-spacing: .22em; color: var(--muted-light); font-size: max(11px, calc(var(--lh) * 0.13)); line-height: 1.2; margin-top: calc(var(--lh) * -0.2); white-space: nowrap; }
 #title .tata-line { --lw: clamp(220px, 36vw, 560px); }
 #netto .tata-line { --lw: clamp(180px, 22vw, 360px); }
-#close .tata-line { --lw: clamp(150px, 15vw, 240px); }
+#close .tata-line { --lw: clamp(150px, 15vw, 240px); margin-top: calc(var(--lh) * -0.1); } /* this logo isn't inside a heading, so it needs less pull-up */
 .logo svg { width: 100%; height: auto; display: block; overflow: visible; }
 .tagline { margin-top: clamp(18px, 3.5vh, 40px); font-size: var(--fs-lg); font-weight: 500; color: var(--soft); }
 .byline { position: absolute; bottom: clamp(26px, 5vh, 54px); left: 0; right: 0; text-align: center; font-size: var(--fs-sm); color: var(--muted-light); }
@@ -505,7 +512,7 @@ input.r-cost { --c: var(--orange); }
   @page { size: 1600px 900px; margin: 0; }
   html, body { background: #fff; width: 1600px; height: auto !important; overflow: visible !important; }
   #deck { position: static !important; overflow: visible !important; }
-  .progress, .dots, .counter, .toolbar, .hint, .skip, .lightbox, .drift { display: none !important; }
+  .progress, .dots, .counter, .toolbar, .hint, .skip, .lightbox, .drift, .corner-mark { display: none !important; }
   .slide { position: relative !important; visibility: visible !important; opacity: 1 !important; inset: auto !important; transform: none !important; translate: none !important; width: 1600px !important; height: 900px !important; max-width: none !important; break-after: page; page-break-after: always; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .sources { height: auto !important; min-height: 900px !important; }
   .call { display: none !important; }
