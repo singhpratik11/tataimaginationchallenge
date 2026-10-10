@@ -184,7 +184,7 @@ const builds = {
   netto(tl, s) {
     const logo = $('.meet-logo svg', s);
     tl.from($$('.leaf-a, .leaf-b', logo), { scale: 0, rotate: -25, transformOrigin: '0% 100%', stagger: 0.15, duration: 0.8, ease: 'power3.out' }, 0);
-    tl.from($('.word', logo), { opacity: 0, x: -24, duration: 0.8, ease: 'power3.out' }, 0.3);
+    tl.from([$('.word', logo), $('.tata-line', s)], { opacity: 0, x: -24, duration: 0.8, ease: 'power3.out' }, 0.3);
     $$('.step', s).forEach((st, i) => {
       tl.from(st, { y: 44, opacity: 0, duration: 0.8, ease: 'power3.out' }, 1.1 + i * 0.7);
       tl.from($('.step-ic', st), { scale: 0.4, rotate: -12, duration: 0.6, ease: 'power3.out' }, 1.3 + i * 0.7);
@@ -291,7 +291,7 @@ const builds = {
     tl.from($$('.c2 .w', s), { y: 26, opacity: 0, stagger: 0.06, duration: 0.7, ease: 'power3.out' }, 1.5);
     const logo = $('.close-sign svg', s);
     tl.from($$('.leaf-a, .leaf-b', logo), { scale: 0, transformOrigin: '0% 100%', stagger: 0.15, duration: 0.8, ease: 'power3.out' }, 3.2);
-    tl.from($('.word', logo), { opacity: 0, x: -16, duration: 0.8 }, 3.4);
+    tl.from([$('.word', logo), $('.tata-line', s)], { opacity: 0, x: -16, duration: 0.8 }, 3.4);
     tl.from($('.close-sign .tagline', s), { opacity: 0, y: 12, duration: 0.9 }, 3.8);
   },
 };
@@ -315,8 +315,8 @@ function chatScene(tl, s, { msgAt, typingAt, replyAt }) {
 
 const slides = $$('.slide');
 const N = slides.length;
-const BUILD_SPEED = 0.8;   // builds play a little slower than authored
-const SLOW_SPEED = 0.68;   // the two emotional chat slides
+const BUILD_SPEED = 1.05;  // builds play at about authored speed
+const SLOW_SPEED = 0.88;   // the two emotional chat slides stay a touch slower
 const TRANSITION = 1.2;    // seconds for the slide-to-slide move
 const ctxs = [];
 const tls = [];
@@ -326,7 +326,7 @@ let busy = false;
 builds.title = (tl, s) => {
   const svg = $('.title-logo svg', s);
   tl.from($$('.leaf-a, .leaf-b', svg), { scale: 0, rotate: -30, transformOrigin: '0% 100%', stagger: 0.18, duration: 1.1, ease: 'power3.out' }, 0.1)
-    .from($('.word', svg), { opacity: 0, x: -30, duration: 1, ease: 'power3.out' }, 0.45)
+    .from([$('.word', svg), $('.tata-line', s)], { opacity: 0, x: -30, duration: 1, ease: 'power3.out' }, 0.45)
     .from($$('.tagline .w', s), { y: 24, opacity: 0, stagger: 0.09, duration: 0.8, ease: 'power3.out' }, 1.0)
     .from($('.byline', s), { opacity: 0, duration: 0.8 }, 1.6)
     .from($('.hint', s), { opacity: 0, y: -8, duration: 0.8 }, 2.0);

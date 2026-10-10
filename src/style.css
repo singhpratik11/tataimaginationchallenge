@@ -112,6 +112,12 @@ html:not(.ready) .slide:first-child { visibility: visible; }
 /* ---------- S0 title ---------- */
 .title-logo .logo { width: clamp(220px, 36vw, 560px); }
 .logo { display: inline-block; line-height: 0; }
+/* "A TATA PRODUCT": a small endorsement line under the logo (plain text, no Tata mark).
+   --lw = that logo's width; logo height = width x 191/588 (its viewBox). */
+.tata-line { --lh: calc(var(--lw) * 191 / 588); font-weight: 600; letter-spacing: .22em; color: var(--muted-light); font-size: max(11px, calc(var(--lh) * 0.13)); line-height: 1.2; margin-top: calc(var(--lh) * 0.12); white-space: nowrap; }
+#title .tata-line { --lw: clamp(220px, 36vw, 560px); }
+#netto .tata-line { --lw: clamp(180px, 22vw, 360px); }
+#close .tata-line { --lw: clamp(150px, 15vw, 240px); }
 .logo svg { width: 100%; height: auto; display: block; overflow: visible; }
 .tagline { margin-top: clamp(18px, 3.5vh, 40px); font-size: var(--fs-lg); font-weight: 500; color: var(--soft); }
 .byline { position: absolute; bottom: clamp(26px, 5vh, 54px); left: 0; right: 0; text-align: center; font-size: var(--fs-sm); color: var(--muted-light); }
@@ -172,6 +178,14 @@ html:not(.ready) .slide:first-child { visibility: visible; }
 .today { position: absolute; left: .9em; right: .9em; bottom: 5.2em; padding: .8em 1em; border-radius: 1em; border: 1px solid #2e3a55; display: grid; grid-template-columns: 1fr auto; row-gap: .1em; font-size: .85em; color: #93a2c3; }
 .today b { grid-row: span 2; align-self: center; font-size: 1.5em; color: var(--white); }
 .o-btn { position: absolute; left: .9em; right: .9em; bottom: 1.6em; padding: .8em; border-radius: 1em; background: var(--blue); text-align: center; font-weight: 600; font-size: .95em; }
+
+/* per-app accent colours (requested): Delivery app 1 red, Delivery app 2 yellow, Ride app green */
+.pa { --app: #e23744; --app-ink: #ffffff; }
+.pb { --app: #f8cb46; --app-ink: #1f1a08; }
+.pc { --app: #84c225; --app-ink: #13210a; }
+.p3 .app-ic, .p3 .o-btn { background: var(--app); color: var(--app-ink); }
+.p3 .t-fg { stroke: var(--app); }
+.p3 .pips i.f { background: var(--app); }
 
 /* S2 drift */
 .drift { position: absolute; inset: 0; pointer-events: none; }
