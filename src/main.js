@@ -286,9 +286,8 @@ const builds = {
 
 
   close(tl, s) {
-    tl.from($$('.c1 .w', s), { y: 26, opacity: 0, stagger: 0.08, duration: 0.7, ease: 'power3.out' }, 0);
-    tl.to($('.c1', s), { opacity: 0.55, duration: 0.6 }, 1.5);
-    tl.from($$('.c2 .w', s), { y: 26, opacity: 0, stagger: 0.06, duration: 0.7, ease: 'power3.out' }, 1.5);
+    tl.from($$('.ask .w', s), { y: 26, opacity: 0, stagger: 0.08, duration: 0.7, ease: 'power3.out' }, 0);
+    tl.from($('.ask-sub', s), rise, 1.5);
     const logo = $('.close-sign svg', s);
     tl.from($$('.leaf-a, .leaf-b', logo), { scale: 0, transformOrigin: '0% 100%', stagger: 0.15, duration: 0.8, ease: 'power3.out' }, 3.2);
     tl.from([$('.word', logo), $('.tata-line', s)], { opacity: 0, x: -16, duration: 0.8 }, 3.4);

@@ -418,8 +418,7 @@ input.r-cost { --c: var(--orange); }
 
 /* ---------- S15 close ---------- */
 #close .narrow > * { max-width: 24ch; }
-.c1 { color: var(--soft); }
-.c2 { margin-top: clamp(16px, 3vh, 34px); }
+#close .narrow > .ask-sub { max-width: 34ch; } /* the supporting line of the ask, wider than the 24ch headline */
 .close-sign { margin-top: clamp(36px, 8vh, 90px); display: flex; flex-direction: column; align-items: center; }
 .close-sign .logo { width: clamp(150px, 15vw, 240px); }
 .close-sign .tagline { white-space: nowrap; margin-top: 14px; font-size: var(--fs-md); }
