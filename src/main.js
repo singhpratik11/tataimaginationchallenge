@@ -332,13 +332,15 @@ builds.title = (tl, s) => {
     .from($('.hint', s), { opacity: 0, y: -8, duration: 0.8 }, 2.0);
 };
 
+const baseSpeed = (i) => (slides[i].hasAttribute('data-slow') ? SLOW_SPEED : BUILD_SPEED);
+
 function makeBuild(i) {
   const s = slides[i];
   ctxs[i]?.revert();
   ctxs[i] = gsap.context(() => {
     const tl = gsap.timeline({ paused: true, defaults: { ease: 'power2.out' } });
     if (!RM) builds[s.id]?.(tl, s);
-    tl.timeScale(s.hasAttribute('data-slow') ? SLOW_SPEED : BUILD_SPEED);
+    tl.timeScale(baseSpeed(i));
     tls[i] = tl;
   }, s);
 }
@@ -361,6 +363,8 @@ function goTo(i, { instant = false, built = false } = {}) {
   // forward: the new slide builds in; backward: it is already built, like a keynote
   if (dir > 0 && !built) tls[i].pause(0); else tls[i].progress(1).pause();
   setOn(i, true);
+  finishing = false;
+  tls[i].timeScale(baseSpeed(i));
   const play = () => { if (dir > 0 && !built) tls[i].play(0); };
 
   if (prev < 0 || instant) {
@@ -394,14 +398,18 @@ function goTo(i, { instant = false, built = false } = {}) {
       .fromTo(next, { yPercent: -22, opacity: 0.35 }, { yPercent: 0, opacity: 1 }, 0);
   }
 }
-let finishing = null;
+// Next while a build is playing: fast-forward the rest of it (in order, at speed) and stay.
+// A second Next during the fast-forward, or any Next once it is done, moves to the next slide.
+const FAST_FORWARD = 1.2; // longest the remaining build may take, in seconds
+let finishing = false;
 function step(dir) {
   const tl = tls[cur];
-  if (dir > 0 && !busy && tl && tl.progress() < 1 && (tl.isActive() || finishing)) {
-    if (!finishing) { tl.pause(); finishing = gsap.to(tl, { progress: 1, duration: 0.55, ease: 'power2.out', onComplete: () => { finishing = null; } }); }
+  if (dir > 0 && !busy && !finishing && tl && tl.isActive() && tl.progress() < 1) {
+    const left = (tl.duration() - tl.time()) / FAST_FORWARD;
+    tl.timeScale(Math.max(baseSpeed(cur) * 2.5, left));
+    finishing = true;
     return;
   }
-  finishing?.kill(); finishing = null;
   goTo(cur + dir);
 }
 
@@ -630,7 +638,7 @@ document.fonts.ready.then(() => {
 // test hooks (scripts/*.mjs): show a slide fully built, or part-way through its build
 window.__netto = {
   N, step, goTo,
-  state: () => ({ cur, busy, p: tls[cur].progress(), active: tls[cur].isActive(), finishing: !!finishing }),
+  state: () => ({ cur, busy, p: tls[cur].progress(), active: tls[cur].isActive(), finishing, speed: tls[cur].timeScale() }),
   show: (i) => { goTo(i, { instant: true, built: true }); tls[i].progress(1).pause(); },
   at: (id, f) => { const i = slides.findIndex((s) => s.id === id); goTo(i, { instant: true, built: true }); tls[i].progress(f).pause(); },
 };
