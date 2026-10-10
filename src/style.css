@@ -131,7 +131,7 @@ html:not(.ready) .slide:first-child { visibility: visible; }
 .close-sign .tagline { font-size: min(var(--fs-md), calc(clamp(150px, 15vw, 240px) * 0.931 / 10.38)); }
 #title .tata-line { --lw: clamp(220px, 36vw, 560px); }
 #netto .tata-line { --lw: clamp(180px, 22vw, 360px); }
-#close .tata-line { --lw: clamp(150px, 15vw, 240px); margin-top: calc(var(--lh) * -0.1); } /* this logo isn't inside a heading, so it needs less pull-up */
+#close .tata-line { --lw: clamp(150px, 15vw, 240px); margin-top: calc(var(--lh) * -0.1); font-size: calc(var(--lh) * 0.13); } /* not in a heading, so less pull-up; no 11px floor, so it scales exactly like the title lockup */
 .logo svg { width: 100%; height: auto; display: block; overflow: visible; }
 .tagline { margin-top: clamp(18px, 3.5vh, 40px); font-size: var(--fs-lg); font-weight: 500; color: var(--soft); }
 .byline { position: absolute; bottom: clamp(26px, 5vh, 54px); left: 0; right: 0; text-align: center; font-size: var(--fs-sm); color: var(--muted-light); }
