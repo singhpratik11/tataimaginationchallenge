@@ -121,7 +121,14 @@ html:not(.ready) .slide:first-child { visibility: visible; }
 .logo { display: inline-block; line-height: 0; }
 /* "A TATA PRODUCT": a small endorsement line under the logo (plain text, no Tata mark).
    --lw = that logo's width; logo height = width x 191/588 (its viewBox). */
-.tata-line { --lh: calc(var(--lw) * 191 / 588); font-weight: 600; letter-spacing: .22em; color: var(--muted-light); font-size: max(11px, calc(var(--lh) * 0.13)); line-height: 1.2; margin-top: calc(var(--lh) * -0.2); white-space: nowrap; }
+.tata-line { --lh: calc(var(--lw) * 191 / 588); font-weight: 400; letter-spacing: .22em; color: var(--muted-light); font-size: max(11px, calc(var(--lh) * 0.13)); line-height: 1.2; margin-top: calc(var(--lh) * -0.2); white-space: nowrap;
+  /* right-aligned to the end of the "netto" wordmark: the logo's artwork is ~93.1% of its box, centred;
+     the extra .22em + negative margin cancel the trailing letter-space after the final T */
+  width: calc(var(--lw) * 0.931 + .22em); margin-right: -.22em; text-align: right; }
+.tata-line b { font-weight: 700; }
+/* "Know what you kept." never wider than the logo artwork it sits under (Poppins 500: text width = 10.38em) */
+#title .tagline { font-size: min(var(--fs-lg), calc(clamp(220px, 36vw, 560px) * 0.931 / 10.38)); }
+.close-sign .tagline { font-size: min(var(--fs-md), calc(clamp(150px, 15vw, 240px) * 0.931 / 10.38)); }
 #title .tata-line { --lw: clamp(220px, 36vw, 560px); }
 #netto .tata-line { --lw: clamp(180px, 22vw, 360px); }
 #close .tata-line { --lw: clamp(150px, 15vw, 240px); margin-top: calc(var(--lh) * -0.1); } /* this logo isn't inside a heading, so it needs less pull-up */
@@ -428,7 +435,7 @@ input.r-cost { --c: var(--orange); }
 #close .narrow > .ask-sub { max-width: 34ch; } /* the supporting line of the ask, wider than the 24ch headline */
 .close-sign { margin-top: clamp(36px, 8vh, 90px); display: flex; flex-direction: column; align-items: center; }
 .close-sign .logo { width: clamp(150px, 15vw, 240px); }
-.close-sign .tagline { white-space: nowrap; margin-top: 14px; font-size: var(--fs-md); }
+.close-sign .tagline { white-space: nowrap; margin-top: 14px; }
 
 /* ---------- S16 sources ---------- */
 .sources { overflow-y: auto; }
