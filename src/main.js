@@ -9,20 +9,15 @@ import '@fontsource/poppins/latin-ext-700.css';
 import './style.css';
 
 import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import Lenis from 'lenis';
 import logoWhite from './brand/logo-white.svg?raw';
 import logoColor from './brand/logo.svg?raw';
 
-gsap.registerPlugin(ScrollTrigger);
 
-let initDone = false;
 const RM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const COARSE = window.matchMedia('(pointer: coarse)').matches;
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const inr = (n) => Math.round(n).toLocaleString('en-IN');
-const vh = () => window.innerHeight;
 if (RM) document.documentElement.classList.add('rm');
 
 /* ---------------------------------------------------------------- setup DOM */
@@ -324,112 +319,91 @@ function chatScene(tl, s, { msgAt, typingAt, replyAt }) {
   tl.fromTo($('.msg.reply .ticks', s), { color: '#9aa3b5' }, { color: '#486AAE', duration: 0.3 }, replyAt + 0.8);
 }
 
-/* ---------------------------------------------------------------- scroll engine */
+/* ---------------------------------------------------------------- deck engine */
+// A real deck: one key press, wheel flick or swipe = one slide. Nothing moves on its own.
 
 const slides = $$('.slide');
 const N = slides.length;
-const pins = [];       // per slide: { start, stop }
-const timelines = [];
-let lenis = null;
+const BUILD_SPEED = 0.8;   // builds play a little slower than authored
+const SLOW_SPEED = 0.68;   // the two emotional chat slides
+const TRANSITION = 1.2;    // seconds for the slide-to-slide move
+const ctxs = [];
+const tls = [];
+let cur = -1;
+let busy = false;
 
-if (!RM) {
-  lenis = new Lenis({ lerp: 0.07, wheelMultiplier: 0.7, smoothWheel: true });
-  lenis.on('scroll', ScrollTrigger.update);
-  gsap.ticker.add((t) => lenis.raf(t * 1000));
-  gsap.ticker.lagSmoothing(0);
-}
-ScrollTrigger.config({ ignoreMobileResize: true });
-
-slides.forEach((s, i) => {
-  const len = parseFloat(s.dataset.len || 0);
-  if (RM || !len) {
-    const st = ScrollTrigger.create({ trigger: s, start: 'top top' });
-    pins[i] = { st, pinned: false };
-    if (RM) gsap.from($('.inner', s), { opacity: 0, duration: 0.6, scrollTrigger: { trigger: s, start: 'top 70%' } });
-    return;
-  }
-  const pin = ScrollTrigger.create({ trigger: s, start: 'top top', end: () => '+=' + len * vh(), pin: true });
-  const tl = gsap.timeline({ paused: true, defaults: { ease: 'power2.out' } });
-  builds[s.id]?.(tl, s);
-  tl.to({}, { duration: Math.max(0.6, tl.duration() * 0.18) }); // hold before handing over
-  timelines.push(tl);
-  ScrollTrigger.create({ trigger: s, start: 'top 62%', end: () => pin.end, scrub: true, animation: tl, invalidateOnRefresh: true });
-  pins[i] = { st: pin, pinned: true };
-});
-
-const maxScroll = () => ScrollTrigger.maxScroll(window);
-const stopOf = (i) => {
-  const p = pins[i];
-  if (!p) return 0;
-  return Math.min(maxScroll(), p.pinned ? p.st.end - 2 : p.st.start);
+builds.title = (tl, s) => {
+  const svg = $('.title-logo svg', s);
+  tl.from($$('.leaf-a, .leaf-b', svg), { scale: 0, rotate: -30, transformOrigin: '0% 100%', stagger: 0.18, duration: 1.1, ease: 'power3.out' }, 0.1)
+    .from($('.word', svg), { opacity: 0, x: -30, duration: 1, ease: 'power3.out' }, 0.45)
+    .from($$('.tagline .w', s), { y: 24, opacity: 0, stagger: 0.09, duration: 0.8, ease: 'power3.out' }, 1.0)
+    .from($('.byline', s), { opacity: 0, duration: 0.8 }, 1.6)
+    .from($('.hint', s), { opacity: 0, y: -8, duration: 0.8 }, 2.0);
 };
-const startOf = (i) => Math.min(maxScroll(), pins[i].st.start);
-const scrollY = () => (lenis ? lenis.scroll : window.scrollY);
 
-function currentIndex(y = scrollY()) {
-  let idx = 0;
-  for (let i = 0; i < N; i++) if (startOf(i) - vh() * 0.5 <= y) idx = i;
-  return idx;
+function makeBuild(i) {
+  const s = slides[i];
+  ctxs[i]?.revert();
+  ctxs[i] = gsap.context(() => {
+    const tl = gsap.timeline({ paused: true, defaults: { ease: 'power2.out' } });
+    if (!RM) builds[s.id]?.(tl, s);
+    tl.timeScale(s.hasAttribute('data-slow') ? SLOW_SPEED : BUILD_SPEED);
+    tls[i] = tl;
+  }, s);
 }
 
-let navTarget = null;
-let navigating = false;
-const ease = (t) => -(Math.cos(Math.PI * t) - 1) / 2; // sine in-out: no sudden rush mid-move
+function setOn(i, on) {
+  const s = slides[i];
+  s.classList.toggle('is-on', on);
+  s.inert = !on;
+  s.setAttribute('aria-hidden', String(!on));
+}
 
-function goTo(i, { immediate = false } = {}) {
+function goTo(i, { instant = false, built = false } = {}) {
   i = Math.max(0, Math.min(N - 1, i));
-  lenis?.resize();
-  const target = stopOf(i);
-  navTarget = i;
-  const dist = Math.abs(target - scrollY());
-  if (!lenis) {
-    window.scrollTo({ top: target, behavior: immediate ? 'auto' : 'smooth' });
-    navTarget = null;
+  if (i === cur || busy) return;
+  const prev = cur;
+  const dir = i > prev ? 1 : -1;
+  const next = slides[i];
+  cur = i;
+  updateChrome();
+  // forward: the new slide builds in; backward: it is already built, like a keynote
+  if (dir > 0 && !built) tls[i].pause(0); else tls[i].progress(1).pause();
+  setOn(i, true);
+  const play = () => { if (dir > 0 && !built) tls[i].play(0); };
+
+  if (prev < 0 || instant) {
+    if (prev >= 0) setOn(prev, false);
+    gsap.set(next, { clearProps: 'transform,opacity,zIndex' });
+    play();
     return;
   }
-  if (dist < 2) { navTarget = null; return; }
-  const far = Math.abs(i - currentIndex()) > 1;
-  let duration = far ? 2.2 : Math.min(7, Math.max(1.6, (dist / vh()) * 0.95));
-  if (slides[i].hasAttribute('data-slow') && !far) duration *= 1.2;
-  navigating = true;
-  lenis.scrollTo(target, {
-    duration, easing: ease, lock: true, force: true, immediate,
-    onComplete: () => { navigating = false; navTarget = null; },
-  });
-}
-
-function step(dir) {
-  const y = scrollY();
-  if (navigating && navTarget != null) return goTo(navTarget + dir);
+  const out = slides[prev];
+  busy = true;
+  const done = () => {
+    setOn(prev, false);
+    tls[prev].pause();
+    gsap.set([out, next], { clearProps: 'transform,opacity,zIndex' });
+    busy = false;
+  };
+  if (RM) {
+    gsap.fromTo(next, { opacity: 0, zIndex: 3 }, { opacity: 1, duration: 0.45, ease: 'none', onComplete: done });
+    play();
+    return;
+  }
+  const tl = gsap.timeline({ defaults: { duration: TRANSITION, ease: 'power2.inOut' }, onComplete: done });
   if (dir > 0) {
-    for (let i = 0; i < N; i++) if (stopOf(i) > y + 4) return goTo(i);
-    return;
-  }
-  for (let i = N - 1; i >= 0; i--) if (stopOf(i) < y - 4) return goTo(i);
-  goTo(0);
-}
-
-/* gentle snapping for people scrolling on their own */
-let snapTimer = 0;
-let touching = false;
-let lastDir = 1;
-function maybeSnap() {
-  if (!lenis || navigating || touching || !$('.lightbox').hidden) return;
-  const y = scrollY();
-  for (let i = 0; i < N; i++) {
-    const d = stopOf(i) - y;
-    if (d > 2 && d < vh() * 0.18) return goTo(i);
+    gsap.set(next, { zIndex: 3 }); gsap.set(out, { zIndex: 2 });
+    tl.fromTo(next, { yPercent: 100 }, { yPercent: 0 }, 0)
+      .fromTo(out, { yPercent: 0, opacity: 1 }, { yPercent: -22, opacity: 0.35 }, 0)
+      .call(play, null, TRANSITION * 0.6);
+  } else {
+    gsap.set(out, { zIndex: 3 }); gsap.set(next, { zIndex: 2 });
+    tl.fromTo(out, { yPercent: 0 }, { yPercent: 100 }, 0)
+      .fromTo(next, { yPercent: -22, opacity: 0.35 }, { yPercent: 0, opacity: 1 }, 0);
   }
 }
-if (lenis) {
-  lenis.on('scroll', (l) => {
-    if (l.direction) lastDir = l.direction;
-    clearTimeout(snapTimer);
-    snapTimer = setTimeout(maybeSnap, 650);
-  });
-}
-window.addEventListener('touchstart', () => { touching = true; }, { passive: true });
-window.addEventListener('touchend', () => { touching = false; clearTimeout(snapTimer); snapTimer = setTimeout(maybeSnap, 420); }, { passive: true });
+const step = (dir) => goTo(cur + dir);
 
 /* ---------------------------------------------------------------- chrome: dots, progress, counter, hash */
 
@@ -443,26 +417,15 @@ slides.forEach((s, i) => {
   dotsNav.appendChild(b);
 });
 const dotBtns = $$('button', dotsNav);
-const bar = $('.progress span');
-const counterEl = $('.counter');
-let lastIdx = -1;
-
-function onScrollUI() {
-  const y = scrollY();
-  bar.style.transform = `scaleX(${Math.min(1, y / Math.max(1, maxScroll()))})`;
-  const idx = currentIndex(y);
-  if (idx !== lastIdx) {
-    lastIdx = idx;
-    dotBtns.forEach((b, i) => { b.classList.toggle('on', i === idx); b.toggleAttribute('aria-current', i === idx); });
-    counterEl.textContent = `${idx + 1}/${N}`;
-    document.body.dataset.tone = slides[idx].classList.contains('bg-light') ? 'light' : 'dark';
-    if (initDone) history.replaceState(null, '', '#' + slides[idx].id);
-  }
-  $('.hint') && ($('.hint').style.opacity = y > 40 ? '0' : '');
+function updateChrome() {
+  $('.progress span').style.transform = `scaleX(${cur / (N - 1)})`;
+  dotBtns.forEach((b, i) => { b.classList.toggle('on', i === cur); b.toggleAttribute('aria-current', i === cur); });
+  $('.counter').textContent = `${cur + 1}/${N}`;
+  document.body.dataset.tone = slides[cur].classList.contains('bg-light') ? 'light' : 'dark';
+  history.replaceState(null, '', '#' + slides[cur].id);
 }
-if (lenis) lenis.on('scroll', onScrollUI); else window.addEventListener('scroll', onScrollUI, { passive: true });
 
-/* ---------------------------------------------------------------- keys, click, presenter, fullscreen */
+/* ---------------------------------------------------------------- input: keys, wheel, swipe, click */
 
 const toggles = {
   present: () => {
@@ -478,15 +441,15 @@ const toggles = {
     else document.documentElement.requestFullscreen?.().catch(() => {});
   },
 };
-let clickAdvance = !COARSE;
-$('[data-act="click"]').setAttribute('aria-pressed', String(clickAdvance));
+let clickAdvance = false; // off by default: a stray trackpad tap should never change the slide
+$('[data-act="click"]').setAttribute('aria-pressed', 'false');
 $$('.toolbar button').forEach((b) => b.addEventListener('click', (e) => { e.stopPropagation(); toggles[b.dataset.act](); }));
 
 window.addEventListener('keydown', (e) => {
   if (e.metaKey || e.ctrlKey || e.altKey) return;
   const t = e.target;
   const typing = t.matches?.('input, textarea, select, [contenteditable]');
-    if (!$('.lightbox').hidden) { if (e.key === 'Escape') closeLightbox(); return; }
+  if (!$('.lightbox').hidden) { if (e.key === 'Escape') closeLightbox(); return; }
   if (typing && t.type === 'range' && /Arrow|Page|Home|End/.test(e.key)) return;
   if (typing) return;
   const k = e.key;
@@ -498,6 +461,49 @@ window.addEventListener('keydown', (e) => {
   else if (k === 'f' || k === 'F') toggles.full();
   else if (k === 'c' || k === 'C') toggles.click();
 });
+
+// Can this element (or a parent inside the slide) still scroll in that direction? Then let it.
+function scrollsInside(el, dir) {
+  for (let n = el; n && n !== document.body && !n.classList?.contains('slide-root'); n = n.parentElement) {
+    const oy = getComputedStyle(n).overflowY;
+    if ((oy === 'auto' || oy === 'scroll') && n.scrollHeight > n.clientHeight + 1) {
+      if (dir > 0 && n.scrollTop + n.clientHeight < n.scrollHeight - 1) return true;
+      if (dir < 0 && n.scrollTop > 0) return true;
+    }
+    if (n.classList?.contains('slide')) break;
+  }
+  return false;
+}
+
+// one wheel/trackpad gesture = one slide, however long its momentum lasts
+let wheelAcc = 0, wheelLock = false, wheelTimer = 0;
+window.addEventListener('wheel', (e) => {
+  if (!$('.lightbox').hidden || e.ctrlKey) return;
+  const dir = Math.sign(e.deltaY || e.deltaX);
+  if (!dir || scrollsInside(e.target, dir)) return;
+  e.preventDefault();
+  clearTimeout(wheelTimer);
+  wheelTimer = setTimeout(() => { wheelLock = false; wheelAcc = 0; }, 260);
+  if (wheelLock) return;
+  wheelAcc += e.deltaY || e.deltaX;
+  if (Math.abs(wheelAcc) > 45) { wheelLock = true; step(Math.sign(wheelAcc)); }
+}, { passive: false });
+
+let touch = null;
+window.addEventListener('touchstart', (e) => {
+  const t = e.touches[0];
+  touch = { x: t.clientX, y: t.clientY, down: scrollsInside(e.target, 1), up: scrollsInside(e.target, -1), skip: !!e.target.closest('input, .lightbox') };
+}, { passive: true });
+window.addEventListener('touchend', (e) => {
+  if (!touch || touch.skip) return;
+  const t = e.changedTouches[0];
+  const dx = touch.x - t.clientX, dy = touch.y - t.clientY;
+  if (Math.abs(dy) > 50 && Math.abs(dy) > Math.abs(dx)) {
+    const dir = Math.sign(dy);
+    if (!(dir > 0 ? touch.down : touch.up)) step(dir);
+  } else if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.4) step(Math.sign(dx));
+  touch = null;
+}, { passive: true });
 
 document.addEventListener('click', (e) => {
   if (!clickAdvance) return;
@@ -518,22 +524,6 @@ if (!RM && !COARSE) {
     const nx = e.clientX / innerWidth - 0.5, ny = e.clientY / innerHeight - 0.5;
     setters.forEach((s) => { s.ry(nx * 5); s.rx(-ny * 3.5); });
   }, { passive: true });
-}
-
-/* ---------------------------------------------------------------- title: plays on load */
-
-function titleIntro() {
-  if (RM) return;
-  const s = $('#title');
-  const svg = $('.title-logo svg', s);
-  gsap.timeline({ defaults: { ease: 'power3.out' }, delay: 0.15 })
-    .from($$('.leaf-a, .leaf-b', svg), { scale: 0, rotate: -30, transformOrigin: '0% 100%', stagger: 0.18, duration: 1.1 })
-    .from($('.word', svg), { opacity: 0, x: -30, duration: 1 }, 0.35)
-    .from($$('.tagline .w', s), { y: 24, opacity: 0, stagger: 0.09, duration: 0.8 }, 0.9)
-    .from($('.byline', s), { opacity: 0, duration: 0.8 }, 1.5)
-    .from($('.hint', s), { opacity: 0, y: -8, duration: 0.8 }, 1.9);
-  // a slow drift as the title leaves
-  gsap.to($('.title-logo', s), { yPercent: -30, opacity: 0.2, ease: 'none', scrollTrigger: { trigger: s, start: 'top top', end: 'bottom top', scrub: true } });
 }
 
 /* ---------------------------------------------------------------- try a week */
@@ -594,13 +584,12 @@ renderTry(false);
 
 const lb = $('.lightbox');
 let lbReturn = null;
-function closeLightbox() { lb.hidden = true; lenis?.start(); lbReturn?.focus(); }
+function closeLightbox() { lb.hidden = true; lbReturn?.focus(); }
 $$('.lc').forEach((c) => c.addEventListener('click', () => {
   lbReturn = c;
   $('img', lb).src = c.dataset.full;
   $('img', lb).alt = $('img', c).alt;
   lb.hidden = false;
-  lenis?.stop();
   $('.lb-close', lb).focus();
 }));
 lb.addEventListener('click', (e) => { if (e.target === lb || e.target.closest('.lb-close')) closeLightbox(); });
@@ -608,36 +597,39 @@ lb.addEventListener('click', (e) => { if (e.target === lb || e.target.closest('.
 /* the quick-reply buttons in the sample chat respond when tapped */
 $$('#message .qr button').forEach((b) => b.addEventListener('click', () => gsap.fromTo(b, { scale: 0.9 }, { scale: 1, duration: 0.4, ease: 'back.out(3)' })));
 
-/* ---------------------------------------------------------------- print: show every slide fully built */
+/* ---------------------------------------------------------------- print: every slide on its own page, fully built */
 
-window.addEventListener('beforeprint', () => timelines.forEach((t) => t.progress(1)));
-window.addEventListener('afterprint', () => ScrollTrigger.getAll().forEach((st) => st.animation && st.animation.progress(st.progress)));
+window.addEventListener('beforeprint', () => tls.forEach((t) => t.progress(1)));
+window.addEventListener('afterprint', () => tls.forEach((t, i) => { if (i !== cur) t.pause(0); }));
 
 /* ---------------------------------------------------------------- start */
 
-titleIntro();
-document.fonts.ready.then(() => {
-  ScrollTrigger.refresh();
-  lenis?.resize(); // pin spacers just grew the page; let Lenis see the new height before jumping
-  const id = location.hash.slice(1);
-  const i = slides.findIndex((s) => s.id === id);
-  if (i > 0) {
-    if (lenis) lenis.scrollTo(stopOf(i), { immediate: true, force: true });
-    else window.scrollTo(0, stopOf(i));
-    ScrollTrigger.update();
-  }
-  initDone = true;
-  onScrollUI();
+// builds measure layout, so redo them after a resize (the visible slide stays fully built)
+let resizeTimer = 0;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    if (busy) return;
+    slides.forEach((_, i) => makeBuild(i));
+    tls[cur].progress(1).pause();
+  }, 250);
 });
 window.addEventListener('hashchange', () => {
   const i = slides.findIndex((s) => s.id === location.hash.slice(1));
-  if (i >= 0 && i !== currentIndex()) goTo(i);
+  if (i >= 0 && i !== cur) goTo(i);
 });
-// test hook: jump to a fraction of a slide's build (used by scripts/mid.mjs)
-const at = (id, f) => {
-  const i = slides.findIndex((s) => s.id === id);
-  const st = pins[i].st;
-  const y = st.start + (st.end - st.start) * f;
-  if (lenis) lenis.scrollTo(y, { immediate: true, force: true }); else window.scrollTo(0, y);
+
+slides.forEach((s, i) => setOn(i, false));
+document.fonts.ready.then(() => {
+  slides.forEach((_, i) => makeBuild(i));
+  const i = Math.max(0, slides.findIndex((s) => s.id === location.hash.slice(1)));
+  goTo(i, { instant: true });
+  document.documentElement.classList.add('ready');
+});
+
+// test hooks (scripts/*.mjs): show a slide fully built, or part-way through its build
+window.__netto = {
+  N, step, goTo,
+  show: (i) => { goTo(i, { instant: true, built: true }); tls[i].progress(1).pause(); },
+  at: (id, f) => { const i = slides.findIndex((s) => s.id === id); goTo(i, { instant: true, built: true }); tls[i].progress(f).pause(); },
 };
-window.__netto = { goTo, step, stopOf, at, N };

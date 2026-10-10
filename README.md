@@ -1,7 +1,7 @@
 # Netto — scroll story
 
 A scroll-driven keynote for **Netto** (Tata Imagination Challenge 2026, Pratik Singh).
-Vite + vanilla JS, GSAP ScrollTrigger for the builds, Lenis for smooth scroll. The pitch video is deliberately not on the site. Poppins is self-hosted, so it runs offline.
+Vite + vanilla JS, GSAP for the transitions and builds. The pitch video is deliberately not on the site. Poppins is self-hosted, so it runs offline.
 
 ## Run
 
@@ -24,12 +24,14 @@ Keep `dist/assets/` next to it — the card images live there.
 
 | Key | Does |
 | --- | --- |
-| → ↓ Space PageDown | next slide (plays that slide's build) |
+| → ↓ Space PageDown | next slide (it slides in, then its animations play once) |
 | ← ↑ Shift+Space PageUp | previous slide |
 | Home / End | first / last slide |
 | P | presenter mode: hides dots and hint, shows a `5/18` counter |
 | F | fullscreen |
-| C | click/tap anywhere to advance (on by default on laptops, off on phones) |
+| C | click/tap anywhere to advance (off by default) |
+
+Nothing moves on its own: one key press, one mouse-wheel/trackpad flick or one swipe = one slide. Going back shows the previous slide already built. Build speed is `BUILD_SPEED` / `SLOW_SPEED` at the top of the deck engine in `src/main.js`.
 
 Jump straight to a slide with its hash: `#title #apps #question #gap #loan #beti #unnoticed #news #netto #message #card #try #languages #payoff #why #tata #close #sources`.
 
@@ -61,4 +63,4 @@ The script flags console errors and any text that falls off screen. `node script
 
 - Every number on a card or in a chat is an example and carries a "Sample · example numbers" label. Ravi is a composite.
 - No platform names or logos: apps are "Delivery app 1", "Delivery app 2", "Ride app". No Tata logo.
-- `prefers-reduced-motion`: no pinning, parallax or zoom; slides simply fade in.
+- `prefers-reduced-motion`: no builds, parallax or zoom; slides simply cross-fade.

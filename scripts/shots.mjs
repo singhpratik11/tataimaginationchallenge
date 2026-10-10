@@ -23,13 +23,13 @@ for (const size of sizes) {
   await page.waitForTimeout(2600);
   const n = await page.evaluate(() => window.__netto.N);
   for (let i = 0; i < n; i++) {
-    await page.evaluate((i) => window.__netto.goTo(i, { immediate: true }), i);
-    await page.waitForTimeout(1700);
+    await page.evaluate((i) => window.__netto.show(i), i);
+    await page.waitForTimeout(400);
     const id = await page.evaluate((i) => document.querySelectorAll('.slide')[i].id, i);
     await page.screenshot({ path: `${out}/${size}-${String(i).padStart(2, '0')}-${id}.png` });
     const bad = await page.evaluate((i) => {
       const s = document.querySelectorAll('.slide')[i];
-      if (s.id === 'sources' || s.id === 'try') return [];
+      if (s.id === 'sources' || (s.id === 'try' && innerWidth < 600)) return [];
       const W = innerWidth, H = innerHeight, res = [];
       s.querySelectorAll('p, h1, h2, h3, li, .gl, .sample, .row-k, button').forEach((el) => {
         const r = el.getBoundingClientRect();
