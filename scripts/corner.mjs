@@ -1,5 +1,4 @@
 // Corner leaf mark: visible where it should be, hidden on the full-logo slides, never on top of slide content.
-// Also reports the gap between the "netto" wordmark and the "A TATA PRODUCT" line.
 import { chromium } from 'playwright';
 const BASE = process.env.URL || 'http://localhost:4173/';
 const b = await chromium.launch();
@@ -24,13 +23,10 @@ for (const [w, h] of [[1920, 1080], [1366, 768], [390, 844]]) {
         if (!r.width || +cs.opacity === 0 || cs.visibility === 'hidden') return;
         if (r.left < m.right + 6 && r.right > m.left - 6 && r.top < m.bottom + 6 && r.bottom > m.top - 6) hits.push((el.className || el.tagName).toString().slice(0, 24));
       });
-      let gap = null;
-      const t = s.querySelector('.tata-line');
-      if (t) { const word = s.querySelector('.logo svg .word').getBoundingClientRect(); const tr = t.getBoundingClientRect(); const fs = parseFloat(getComputedStyle(t).fontSize); gap = Math.round(tr.top + (tr.height - fs * 0.7) / 2 - word.bottom); }
-      return { id: s.id, shown, lit: lit.join(), hits, gap };
+      return { id: s.id, shown, lit: lit.join(), hits };
     });
     if (r.hits.length) problems++;
-    report.push(`${r.id}:${r.shown ? r.lit.replace('cm-on-', '') : 'hidden'}${r.gap !== null ? '(gap ' + r.gap + 'px)' : ''}${r.hits.length ? ' OVERLAP ' + r.hits.join('|') : ''}`);
+    report.push(`${r.id}:${r.shown ? r.lit.replace('cm-on-', '') : 'hidden'}${r.hits.length ? ' OVERLAP ' + r.hits.join('|') : ''}`);
   }
   console.log(`${w}x${h}  ` + report.join('  '));
   await p.close();
