@@ -5,9 +5,9 @@ const p = await b.newPage({ viewport: { width: 1366, height: 768 } });
 p.on('pageerror', (e) => errs.push(String(e))); p.on('console', (m) => m.type() === 'error' && errs.push(m.text()));
 await p.goto('http://localhost:4173/'); await p.waitForTimeout(1500);
 const hashes = [];
-for (let i = 0; i < 4; i++) { await p.keyboard.press('ArrowRight'); await p.waitForTimeout(3800); hashes.push(await p.evaluate(() => location.hash)); }
-await p.mouse.click(600, 400); await p.waitForTimeout(3800); hashes.push('click:' + await p.evaluate(() => location.hash));
-await p.keyboard.press('ArrowLeft'); await p.waitForTimeout(3800); hashes.push('back:' + await p.evaluate(() => location.hash));
+for (let i = 0; i < 4; i++) { await p.keyboard.press('ArrowRight'); await p.waitForTimeout(7500); hashes.push(await p.evaluate(() => location.hash)); }
+await p.mouse.click(600, 400); await p.waitForTimeout(7500); hashes.push('click:' + await p.evaluate(() => location.hash));
+await p.keyboard.press('ArrowLeft'); await p.waitForTimeout(7500); hashes.push('back:' + await p.evaluate(() => location.hash));
 await p.keyboard.press('End'); await p.waitForTimeout(2500); hashes.push('end:' + await p.evaluate(() => location.hash));
 await p.keyboard.press('Home'); await p.waitForTimeout(2500); hashes.push('home:' + await p.evaluate(() => location.hash));
 await p.keyboard.press('p'); hashes.push('presenter:' + await p.evaluate(() => document.body.classList.contains('presenter') + ' ' + document.querySelector('.counter').textContent));

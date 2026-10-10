@@ -66,26 +66,10 @@ function splitWords(root) {
   walk(root);
 }
 
-function mountGrain() {
-  const c = document.createElement('canvas');
-  c.width = c.height = 180;
-  const x = c.getContext('2d');
-  const img = x.createImageData(180, 180);
-  for (let i = 0; i < img.data.length; i += 4) {
-    const v = Math.random() * 255;
-    img.data[i] = img.data[i + 1] = img.data[i + 2] = v;
-    img.data[i + 3] = 255;
-  }
-  x.putImageData(img, 0, 0);
-  $('.grain').style.backgroundImage = `url(${c.toDataURL()})`;
-}
-
 mountLogos();
 mountStatusBars();
 $$('.split-words').forEach(splitWords);
-mountGrain();
 $('.segs').innerHTML = '<i></i>'.repeat(30);
-if (!RM) $$('.phone').forEach((p) => p.classList.add('float'));
 
 /* ---------------------------------------------------------------- helpers */
 
@@ -198,6 +182,19 @@ const builds = {
     counter(tl, $('.scale .count', s), 3.7, 1.4);
   },
 
+  news(tl, s) {
+    const clips = $$('.clip', s);
+    tl.from($('.eyebrow', s), rise, 0);
+    tl.from($$('.big .w', s), { y: 26, opacity: 0, stagger: 0.08, duration: 0.8, ease: 'power3.out' }, 0.1);
+    clips.forEach((c, i) => {
+      const at = 1.0 + i * 0.9;
+      tl.from(c, { y: 90, opacity: 0, rotate: (i % 2 ? 7 : -7), duration: 1.1, ease: 'power3.out' }, at);
+      const marks = $$('mark', c);
+      if (marks.length) tl.from(marks, { backgroundSize: '0% 34%', duration: 0.9, ease: 'power2.inOut' }, at + 0.8);
+    });
+    tl.from($('.sample', s), { opacity: 0, duration: 0.6 }, '>');
+  },
+
   netto(tl, s) {
     const logo = $('.meet-logo svg', s);
     tl.from($$('.leaf-a, .leaf-b', logo), { scale: 0, rotate: -25, transformOrigin: '0% 100%', stagger: 0.15, duration: 0.8, ease: 'power3.out' }, 0);
@@ -301,10 +298,6 @@ const builds = {
     counter(tl, $('.row .count', s), 1.4, 1);
   },
 
-  watch(tl, s) {
-    tl.from($('.watch-head', s), rise, 0);
-    tl.from($('.player', s), { y: 40, opacity: 0, scale: 0.97, duration: 0.9, ease: 'power3.out' }, 0.15);
-  },
 
   close(tl, s) {
     tl.from($$('.c1 .w', s), { y: 26, opacity: 0, stagger: 0.08, duration: 0.7, ease: 'power3.out' }, 0);
@@ -340,7 +333,7 @@ const timelines = [];
 let lenis = null;
 
 if (!RM) {
-  lenis = new Lenis({ lerp: 0.09, wheelMultiplier: 0.9, smoothWheel: true });
+  lenis = new Lenis({ lerp: 0.07, wheelMultiplier: 0.7, smoothWheel: true });
   lenis.on('scroll', ScrollTrigger.update);
   gsap.ticker.add((t) => lenis.raf(t * 1000));
   gsap.ticker.lagSmoothing(0);
@@ -355,12 +348,12 @@ slides.forEach((s, i) => {
     if (RM) gsap.from($('.inner', s), { opacity: 0, duration: 0.6, scrollTrigger: { trigger: s, start: 'top 70%' } });
     return;
   }
-  const pin = ScrollTrigger.create({ trigger: s, start: 'top top', end: () => '+=' + len * vh(), pin: true, anticipatePin: 1 });
+  const pin = ScrollTrigger.create({ trigger: s, start: 'top top', end: () => '+=' + len * vh(), pin: true });
   const tl = gsap.timeline({ paused: true, defaults: { ease: 'power2.out' } });
   builds[s.id]?.(tl, s);
   tl.to({}, { duration: Math.max(0.6, tl.duration() * 0.18) }); // hold before handing over
   timelines.push(tl);
-  ScrollTrigger.create({ trigger: s, start: 'top 62%', end: () => pin.end, scrub: 0.7, animation: tl, invalidateOnRefresh: true });
+  ScrollTrigger.create({ trigger: s, start: 'top 62%', end: () => pin.end, scrub: true, animation: tl, invalidateOnRefresh: true });
   pins[i] = { st: pin, pinned: true };
 });
 
@@ -381,10 +374,11 @@ function currentIndex(y = scrollY()) {
 
 let navTarget = null;
 let navigating = false;
-const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+const ease = (t) => -(Math.cos(Math.PI * t) - 1) / 2; // sine in-out: no sudden rush mid-move
 
 function goTo(i, { immediate = false } = {}) {
   i = Math.max(0, Math.min(N - 1, i));
+  lenis?.resize();
   const target = stopOf(i);
   navTarget = i;
   const dist = Math.abs(target - scrollY());
@@ -395,8 +389,8 @@ function goTo(i, { immediate = false } = {}) {
   }
   if (dist < 2) { navTarget = null; return; }
   const far = Math.abs(i - currentIndex()) > 1;
-  let duration = Math.min(far ? 1.8 : 3.6, Math.max(0.9, 0.8 + (dist / vh()) * 0.42));
-  if (slides[i].hasAttribute('data-slow') && !far) duration *= 1.35;
+  let duration = far ? 2.2 : Math.min(7, Math.max(1.6, (dist / vh()) * 0.95));
+  if (slides[i].hasAttribute('data-slow') && !far) duration *= 1.2;
   navigating = true;
   lenis.scrollTo(target, {
     duration, easing: ease, lock: true, force: true, immediate,
@@ -422,26 +416,16 @@ let lastDir = 1;
 function maybeSnap() {
   if (!lenis || navigating || touching || !$('.lightbox').hidden) return;
   const y = scrollY();
-  if (y >= maxScroll() - 2) return;
-  for (let i = 0; i < N - 1; i++) {
-    const a = stopOf(i), b = stopOf(i + 1);
-    if (y > a + 1 && y < b - 1) {
-      const nextStart = startOf(i + 1);
-      if (y < nextStart) {
-        // between two slides: finish the move in the direction the reader was going
-        if (lastDir > 0 && y - a > 40) goTo(i + 1); else goTo(i);
-      } else if (b - y < vh() * 0.35) {
-        goTo(i + 1);
-      }
-      return;
-    }
+  for (let i = 0; i < N; i++) {
+    const d = stopOf(i) - y;
+    if (d > 2 && d < vh() * 0.18) return goTo(i);
   }
 }
 if (lenis) {
   lenis.on('scroll', (l) => {
     if (l.direction) lastDir = l.direction;
     clearTimeout(snapTimer);
-    snapTimer = setTimeout(maybeSnap, 260);
+    snapTimer = setTimeout(maybeSnap, 650);
   });
 }
 window.addEventListener('touchstart', () => { touching = true; }, { passive: true });
@@ -502,13 +486,12 @@ window.addEventListener('keydown', (e) => {
   if (e.metaKey || e.ctrlKey || e.altKey) return;
   const t = e.target;
   const typing = t.matches?.('input, textarea, select, [contenteditable]');
-  const inVideo = t.closest?.('.player') && $('#pitch').controls;
-  if (!$('.lightbox').hidden) { if (e.key === 'Escape') closeLightbox(); return; }
+    if (!$('.lightbox').hidden) { if (e.key === 'Escape') closeLightbox(); return; }
   if (typing && t.type === 'range' && /Arrow|Page|Home|End/.test(e.key)) return;
   if (typing) return;
   const k = e.key;
-  if (['ArrowDown', 'ArrowRight', 'PageDown'].includes(k) || (k === ' ' && !e.shiftKey && !inVideo)) { e.preventDefault(); step(1); }
-  else if (['ArrowUp', 'ArrowLeft', 'PageUp'].includes(k) || (k === ' ' && e.shiftKey && !inVideo)) { e.preventDefault(); step(-1); }
+  if (['ArrowDown', 'ArrowRight', 'PageDown'].includes(k) || (k === ' ' && !e.shiftKey)) { e.preventDefault(); step(1); }
+  else if (['ArrowUp', 'ArrowLeft', 'PageUp'].includes(k) || (k === ' ' && e.shiftKey)) { e.preventDefault(); step(-1); }
   else if (k === 'Home') { e.preventDefault(); goTo(0); }
   else if (k === 'End') { e.preventDefault(); goTo(N - 1); }
   else if (k === 'p' || k === 'P') toggles.present();
@@ -518,7 +501,7 @@ window.addEventListener('keydown', (e) => {
 
 document.addEventListener('click', (e) => {
   if (!clickAdvance) return;
-  if (e.target.closest('a, button, input, label, video, .player, .lc, .mini, .lightbox, .transcript, .dots, .toolbar, .presets')) return;
+  if (e.target.closest('a, button, input, label, .lc, .mini, .lightbox, .dots, .toolbar, .presets')) return;
   if (String(window.getSelection?.() || '').length) return;
   step(1);
 });
@@ -527,13 +510,13 @@ document.addEventListener('click', (e) => {
 
 if (!RM && !COARSE) {
   const setters = $$('.tilt').map((p) => ({
-    rx: gsap.quickTo(p, 'rotationX', { duration: 0.9, ease: 'power3.out' }),
-    ry: gsap.quickTo(p, 'rotationY', { duration: 0.9, ease: 'power3.out' }),
+    rx: gsap.quickTo(p, 'rotationX', { duration: 1.6, ease: 'power2.out' }),
+    ry: gsap.quickTo(p, 'rotationY', { duration: 1.6, ease: 'power2.out' }),
   }));
   $$('.stage').forEach((st) => { st.style.perspective = '1400px'; });
   window.addEventListener('pointermove', (e) => {
     const nx = e.clientX / innerWidth - 0.5, ny = e.clientY / innerHeight - 0.5;
-    setters.forEach((s) => { s.ry(nx * 9); s.rx(-ny * 6); });
+    setters.forEach((s) => { s.ry(nx * 5); s.rx(-ny * 3.5); });
   }, { passive: true });
 }
 
@@ -552,46 +535,6 @@ function titleIntro() {
   // a slow drift as the title leaves
   gsap.to($('.title-logo', s), { yPercent: -30, opacity: 0.2, ease: 'none', scrollTrigger: { trigger: s, start: 'top top', end: 'bottom top', scrub: true } });
 }
-
-/* ---------------------------------------------------------------- video */
-
-const video = $('#pitch');
-const player = $('.player');
-function loadVideo() {
-  const src = $('source', video);
-  if (src.src) return;
-  src.src = src.dataset.src;
-  video.load();
-}
-new IntersectionObserver((entries) => {
-  entries.forEach((en) => {
-    if (en.isIntersecting) {
-      loadVideo();
-      if (!RM && !player.classList.contains('playing')) video.play().catch(() => {});
-    } else if (!en.isIntersecting && !video.paused) {
-      video.pause();
-    }
-  });
-}, { rootMargin: '0px', threshold: 0.35 }).observe(player);
-new IntersectionObserver((en) => { if (en[0].isIntersecting) loadVideo(); }, { rootMargin: '150% 0px' }).observe(player);
-
-$('.play').addEventListener('click', () => {
-  loadVideo();
-  player.classList.add('playing');
-  video.loop = false;
-  video.muted = false;
-  video.controls = true;
-  video.currentTime = 0;
-  video.play().catch(() => {});
-  video.focus();
-});
-$('[data-act="transcript"]').addEventListener('click', (e) => {
-  const tr = $('#transcript');
-  tr.hidden = !tr.hidden;
-  e.currentTarget.setAttribute('aria-expanded', String(!tr.hidden));
-  $('#watch').classList.toggle('has-transcript', !tr.hidden);
-});
-$('#transcript').setAttribute('data-lenis-prevent', '');
 
 /* ---------------------------------------------------------------- try a week */
 
@@ -675,6 +618,7 @@ window.addEventListener('afterprint', () => ScrollTrigger.getAll().forEach((st) 
 titleIntro();
 document.fonts.ready.then(() => {
   ScrollTrigger.refresh();
+  lenis?.resize(); // pin spacers just grew the page; let Lenis see the new height before jumping
   const id = location.hash.slice(1);
   const i = slides.findIndex((s) => s.id === id);
   if (i > 0) {
