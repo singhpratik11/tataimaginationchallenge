@@ -87,35 +87,26 @@ function buzz(tl, el, at) {
 const builds = {
   apps(tl, s) {
     const lines = $$('.line', s);
-    const tiles = $$('.tile', s);
-    const rings = $$('.ring', s);
-    const thumb = $('.thumb', s);
-    const phone = $('.phone', s);
-    const pos = (i) => {
-      const t = tiles[i];
-      return { x: () => t.offsetLeft + t.offsetWidth * 0.72 - thumb.offsetWidth / 2, y: () => t.offsetTop + t.offsetHeight / 2 - thumb.offsetHeight / 2 };
-    };
+    const phones = $$('.p3', s);
+    const rings = $$('.p-ring', s);
     tl.from(lines[0], rise, 0);
-    tl.from(tiles, { y: 30, opacity: 0, stagger: 0.12, duration: 0.8, ease: 'power3.out' }, 0.1);
-    tl.set(thumb, { ...pos(0), opacity: 0 }, 0);
-    tl.to(thumb, { opacity: 1, duration: 0.3 }, 1.0);
-    [0, 1, 2].forEach((i) => {
-      const at = 1.2 + i * 1.5;
-      if (i) tl.to(thumb, { ...pos(i), duration: 0.6, ease: 'power2.inOut' }, at - 0.6);
-      tl.to(thumb, { scale: 0.8, duration: 0.15, yoyo: true, repeat: 1 }, at);
-      tl.to(rings[i], { opacity: 1, duration: 0.25 }, at + 0.1);
-      tl.to(tiles[i], { scale: 1.03, duration: 0.3 }, at + 0.1);
-      if (i) {
-        tl.to(rings[i - 1], { opacity: 0, duration: 0.25 }, at + 0.1);
-        tl.to(tiles[i - 1], { scale: 1, duration: 0.3 }, at + 0.1);
-      }
-      buzz(tl, phone, at + 0.12);
-    });
-    tl.to(lines[0], { opacity: 0.45, duration: 0.5 }, 2.6);
-    tl.from(lines[1], rise, 2.6);
-    tl.to(lines[1], { opacity: 0.45, duration: 0.5 }, 4.6);
-    tl.from(lines[2], rise, 4.6);
-    tl.to(thumb, { opacity: 0, duration: 0.3 }, 5.2);
+    tl.from(phones, { y: 60, opacity: 0, stagger: 0.25, duration: 1, ease: 'power3.out' }, 0.2);
+    // his attention jumps from phone to phone
+    const focus = (k, at) => {
+      phones.forEach((p, j) => tl.to(p, { opacity: j === k ? 1 : 0.42, scale: j === k ? 1.05 : 0.97, y: j === k ? -10 : 0, zIndex: j === k ? 3 : 1, duration: 0.5, ease: 'power2.inOut' }, at));
+      rings.forEach((r, j) => tl.to(r, { opacity: j === k ? 1 : 0, duration: 0.4 }, at));
+      buzz(tl, phones[k], at + 0.15);
+    };
+    focus(0, 1.6);
+    tl.to(lines[0], { opacity: 0.45, duration: 0.5 }, 2.4);
+    tl.from(lines[1], rise, 2.4);
+    focus(1, 3.2);
+    focus(2, 4.6);
+    tl.to(lines[1], { opacity: 0.45, duration: 0.5 }, 5.6);
+    tl.from(lines[2], rise, 5.6);
+    // all three, side by side: nobody shows him one total
+    tl.to(phones, { opacity: 1, scale: 1, y: 0, zIndex: (i) => (i === 1 ? 2 : 1), duration: 0.6, ease: 'power2.inOut' }, 6.4);
+    tl.to(rings, { opacity: 0, duration: 0.4 }, 6.4);
   },
 
   question(tl, s) {
@@ -403,7 +394,16 @@ function goTo(i, { instant = false, built = false } = {}) {
       .fromTo(next, { yPercent: -22, opacity: 0.35 }, { yPercent: 0, opacity: 1 }, 0);
   }
 }
-const step = (dir) => goTo(cur + dir);
+let finishing = null;
+function step(dir) {
+  const tl = tls[cur];
+  if (dir > 0 && !busy && tl && tl.progress() < 1 && (tl.isActive() || finishing)) {
+    if (!finishing) { tl.pause(); finishing = gsap.to(tl, { progress: 1, duration: 0.55, ease: 'power2.out', onComplete: () => { finishing = null; } }); }
+    return;
+  }
+  finishing?.kill(); finishing = null;
+  goTo(cur + dir);
+}
 
 /* ---------------------------------------------------------------- chrome: dots, progress, counter, hash */
 
@@ -630,6 +630,7 @@ document.fonts.ready.then(() => {
 // test hooks (scripts/*.mjs): show a slide fully built, or part-way through its build
 window.__netto = {
   N, step, goTo,
+  state: () => ({ cur, busy, p: tls[cur].progress(), active: tls[cur].isActive(), finishing: !!finishing }),
   show: (i) => { goTo(i, { instant: true, built: true }); tls[i].progress(1).pause(); },
   at: (id, f) => { const i = slides.findIndex((s) => s.id === id); goTo(i, { instant: true, built: true }); tls[i].progress(f).pause(); },
 };

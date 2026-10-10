@@ -4,7 +4,7 @@ const b = await chromium.launch();
 const errs = [];
 const p = await b.newPage({ viewport: { width: 1366, height: 768 } });
 p.on('pageerror', (e) => errs.push(String(e))); p.on('console', (m) => m.type() === 'error' && errs.push(m.text()));
-await p.goto(BASE); await p.waitForTimeout(1500);
+await p.goto(BASE); await p.waitForTimeout(5000);
 const hashes = [];
 for (let i = 0; i < 4; i++) { await p.keyboard.press('ArrowRight'); await p.waitForTimeout(1800); hashes.push(await p.evaluate(() => location.hash)); }
 await p.keyboard.press('c'); await p.mouse.click(600, 400); await p.waitForTimeout(1800); hashes.push('click:' + await p.evaluate(() => location.hash));
