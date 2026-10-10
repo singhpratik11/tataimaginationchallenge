@@ -171,8 +171,6 @@ const builds = {
     tl.from(talk, { y: 26, opacity: 0, stagger: 0.07, duration: 0.7, ease: 'power3.out' }, 0);
     tl.to(talk, { opacity: 0.35, duration: 0.8 }, 1.6);
     tl.from($$('.under .w', s), { y: 26, opacity: 0, stagger: 0.06, duration: 0.7, ease: 'power3.out' }, 1.8);
-    tl.from($('.scale', s), { opacity: 0, y: 20, duration: 0.8 }, 3.6);
-    counter(tl, $('.scale .count', s), 3.7, 1.4);
   },
 
   news(tl, s) {
@@ -331,9 +329,13 @@ let busy = false;
 
 builds.title = (tl, s) => {
   const svg = $('.title-logo svg', s);
+  const croreEl = $('.crore', s);
+  const crore = { v: 2.35 }; // counts up to 2.35 crore on load
   tl.from($$('.leaf-a, .leaf-b', svg), { scale: 0, rotate: -30, transformOrigin: '0% 100%', stagger: 0.18, duration: 1.1, ease: 'power3.out' }, 0.1)
     .from($('.word', svg), { opacity: 0, x: -30, duration: 1, ease: 'power3.out' }, 0.45)
     .from($$('.tagline .w', s), { y: 24, opacity: 0, stagger: 0.09, duration: 0.8, ease: 'power3.out' }, 1.0)
+    .from($('.hero-stat', s), { y: 16, opacity: 0, duration: 0.8, ease: 'power3.out' }, 1.5)
+    .fromTo(crore, { v: 0 }, { v: 2.35, duration: 1.4, ease: 'power2.out', onUpdate: () => { croreEl.textContent = crore.v.toFixed(2) + ' crore'; } }, 1.6)
     .from($('.byline', s), { opacity: 0, duration: 0.8 }, 1.6)
     .from($('.hint', s), { opacity: 0, y: -8, duration: 0.8 }, 2.0);
 };

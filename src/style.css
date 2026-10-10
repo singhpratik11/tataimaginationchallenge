@@ -124,6 +124,8 @@ html:not(.ready) .slide:first-child { visibility: visible; }
 .close-sign .tagline { font-size: min(var(--fs-md), calc(clamp(150px, 15vw, 240px) * 0.931 / 10.38)); }
 .logo svg { width: 100%; height: auto; display: block; overflow: visible; }
 .tagline { margin-top: clamp(18px, 3.5vh, 40px); font-size: var(--fs-lg); font-weight: 500; color: var(--soft); }
+.hero-stat { margin-top: clamp(14px, 2.6vh, 28px); max-width: 46ch; text-wrap: balance; font-size: clamp(0.95rem, 1.15vw, 1.3rem); font-weight: 500; color: var(--muted-light); line-height: 1.45; }
+.hero-stat .crore { color: var(--white); font-variant-numeric: tabular-nums; }
 .byline { position: absolute; bottom: clamp(26px, 5vh, 54px); left: 0; right: 0; text-align: center; font-size: var(--fs-sm); color: var(--muted-light); }
 .hint { position: absolute; bottom: clamp(70px, 12vh, 130px); left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--soft); }
 .hint svg { animation: bob 2.2s var(--ease) infinite; }
@@ -291,9 +293,6 @@ html:not(.ready) .slide:first-child { visibility: visible; }
 .talk { color: var(--white); }
 .under { margin-top: clamp(22px, 4vh, 48px); color: var(--soft); font-weight: 600; }
 .under .hl { color: var(--white); font-weight: 700; }
-.scale { margin-top: clamp(28px, 6vh, 70px); max-width: 44ch !important; }
-.scale-n { font-size: clamp(2.2rem, 5vw, 5.2rem); font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; color: var(--white); }
-.scale-t { font-size: var(--fs-sm); color: var(--muted-light); margin-top: 4px; }
 
 /* ---------- S7 ---------- */
 .meet-logo .logo { width: clamp(180px, 22vw, 360px); }
