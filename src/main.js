@@ -326,6 +326,7 @@ const ctxs = [];
 const tls = [];
 let cur = -1;
 let busy = false;
+let held = false; // on first load the title waits, blank, for the first Next (for recording)
 
 builds.title = (tl, s) => {
   const svg = $('.title-logo svg', s);
@@ -360,7 +361,7 @@ function setOn(i, on) {
   s.setAttribute('aria-hidden', String(!on));
 }
 
-function goTo(i, { instant = false, built = false } = {}) {
+function goTo(i, { instant = false, built = false, hold = false } = {}) {
   i = Math.max(0, Math.min(N - 1, i));
   if (i === cur || busy) return;
   const prev = cur;
@@ -372,8 +373,9 @@ function goTo(i, { instant = false, built = false } = {}) {
   if (dir > 0 && !built) tls[i].pause(0); else tls[i].progress(1).pause();
   setOn(i, true);
   finishing = false;
+  held = hold;
   tls[i].timeScale(baseSpeed(i));
-  const play = () => { if (dir > 0 && !built) tls[i].play(0); };
+  const play = () => { if (dir > 0 && !built && !hold) tls[i].play(0); };
 
   if (prev < 0 || instant) {
     if (prev >= 0) setOn(prev, false);
@@ -412,6 +414,7 @@ const FAST_FORWARD = 1.2; // longest the remaining build may take, in seconds
 let finishing = false;
 function step(dir) {
   const tl = tls[cur];
+  if (held) { if (dir > 0) { held = false; tl.play(0); } return; }
   if (dir > 0 && !busy && !finishing && tl && tl.isActive() && tl.progress() < 1) {
     const left = (tl.duration() - tl.time()) / FAST_FORWARD;
     tl.timeScale(Math.max(baseSpeed(cur) * 2.5, left));
@@ -628,7 +631,7 @@ window.addEventListener('resize', () => {
   resizeTimer = setTimeout(() => {
     if (busy) return;
     slides.forEach((_, i) => makeBuild(i));
-    tls[cur].progress(1).pause();
+    if (held) tls[cur].pause(0); else tls[cur].progress(1).pause();
   }, 250);
 });
 window.addEventListener('hashchange', () => {
@@ -640,7 +643,7 @@ slides.forEach((s, i) => setOn(i, false));
 document.fonts.ready.then(() => {
   slides.forEach((_, i) => makeBuild(i));
   const i = Math.max(0, slides.findIndex((s) => s.id === location.hash.slice(1)));
-  goTo(i, { instant: true });
+  goTo(i, { instant: true, hold: i === 0 && !RM });
   document.documentElement.classList.add('ready');
 });
 
